@@ -46,22 +46,29 @@ function App() {
   const [message, setMessage] = useState(false);
   const [email, setEmail] = React.useState("");
 
-  React.useEffect(() => {
+  const updateUser = () => {
     api
       .getUserInfo()
       .then((user) => {
         setCurrentUser(user.data);
       })
       .catch((err) => console.log("Eroor:" + err));
-  }, []);
-
-  React.useEffect(() => {
+  };
+  const updateCard = () => {
     api
       .getInitialCards()
       .then((res) => {
         setCard(res);
       })
       .catch((err) => console.log("Eroor:" + err));
+  };
+  React.useEffect(() => {
+    updateUser();
+    updateCard();
+  }, []);
+
+  React.useEffect(() => {
+
   }, []);
 
   function handleCardLike(card) {
@@ -181,6 +188,8 @@ function App() {
       .then((data) => {
         if (data.jwt) {
           localStorage.setItem("token", data.jwt);
+          updateUser();
+          updateCard();
           setLoggedIn(true);
           setEmail(email);
         }
@@ -210,7 +219,6 @@ function App() {
   }
 
   function handleLogout() {
-    console.log("logout");
     localStorage.removeItem("token");
     setLoggedIn(false);
   }
